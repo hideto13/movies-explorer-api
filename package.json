@@ -1,0 +1,23 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hideto13/movies-explorer-api.git"
+  },
+  "author": "Tanya Kozlova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hideto13/movies-explorer-api/issues"
+  },
+  "homepage": "https://github.com/hideto13/movies-explorer-api#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
