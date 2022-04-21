@@ -19,5 +19,10 @@
   "homepage": "https://github.com/hideto13/movies-explorer-api#readme",
   "devDependencies": {
     "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "mongoose": "^6.3.0",
+    "validator": "^13.7.0"
   }
 }
