@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFound');
 
 const { PORT = 3000 } = process.env;
@@ -13,6 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
 
+app.use(requestLogger);
+
 app.use(cors());
 
 app.use('/users', require('./routes/users'));
@@ -22,6 +25,8 @@ app.use('/movies', require('./routes/movies'));
 app.use((req, res, next) => {
   next(new NotFoundError('Некорректный запрос'));
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
