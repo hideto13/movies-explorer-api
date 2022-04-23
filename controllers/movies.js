@@ -5,6 +5,7 @@ const BadRequestError = require('../errors/BadRequesError');
 
 const getMovieObj = (movie) => {
   const obj = {
+    _id: movie._id,
     movieId: movie.movieId,
     country: movie.country,
     director: movie.director,
@@ -34,7 +35,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
@@ -48,7 +49,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
@@ -66,7 +67,7 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.movieId)
+  Movie.findById(req.params._id)
     .orFail(() => {
       throw new NotFoundError('ID не найден');
     })
@@ -74,8 +75,10 @@ module.exports.deleteMovie = (req, res, next) => {
       if (!movie.owner.equals(req.user._id)) {
         throw new ForbiddenError('Нет доступа');
       }
-    }).then(() => Movie.deleteOne({ _id: req.params.movieId })
-      .then((movie) => res.send(getMovieObj(movie))))
+    }).then(() => Movie.deleteOne({ _id: req.params._id })
+      .then((movie) => {
+        res.send(getMovieObj(movie));
+      }))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Некорректно введен ID'));
