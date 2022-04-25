@@ -3,45 +3,33 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { celebrate, errors, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
-  createUser,
-  login,
-} = require('./controllers/users');
+  MONGO_DATA_BASE,
+  PORT,
+} = require('./config');
 const NotFoundError = require('./errors/NotFound');
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(MONGO_DATA_BASE);
 
 app.use(requestLogger);
 
 app.use(cors());
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30).required(),
-  }),
-}), createUser);
+app.use(require('./routes/signup'));
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
+app.use(require('./routes/signin'));
 
-app.use('/users', auth, require('./routes/users'));
+app.use(require('./routes/users'));
 
-app.use('/movies', auth, require('./routes/movies'));
+app.use(require('./routes/movies'));
 
 app.use(auth, (req, res, next) => {
   next(new NotFoundError('Некорректный запрос'));

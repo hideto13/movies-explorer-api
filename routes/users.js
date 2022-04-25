@@ -4,14 +4,20 @@ const {
   getCurrentUser,
   updateCurrentUser,
 } = require('../controllers/users');
+const auth = require('../middlewares/auth');
 
-router.get('/me', getCurrentUser);
+router.get('/users/me', auth, getCurrentUser);
 
-router.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required(),
-    email: Joi.string().required().email(),
+router.patch(
+  '/users/me',
+  auth,
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30).required(),
+      email: Joi.string().required().email(),
+    }),
   }),
-}), updateCurrentUser);
+  updateCurrentUser,
+);
 
 module.exports = router;

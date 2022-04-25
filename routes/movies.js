@@ -5,16 +5,17 @@ const {
   createMovie,
   deleteMovie,
 } = require('../controllers/movies');
+const auth = require('../middlewares/auth');
 
-router.get('/', getMovies);
+router.get('/movies', auth, getMovies);
 
-router.delete('/:_id', celebrate({
+router.delete('/movies/:_id', auth, celebrate({
   params: Joi.object().keys({
     _id: Joi.string().length(24).hex().required(),
   }),
 }), deleteMovie);
 
-router.post('/', celebrate({
+router.post('/movies', auth, celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
