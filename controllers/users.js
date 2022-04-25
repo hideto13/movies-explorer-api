@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { NODE_ENV, JWT_SECRET, JWT_DEV_SECRET } = require('../config');
+const { ERROR_MESSAGE_CONFLICT, ERROR_MESSAGE_NOT_FOUND_ID } = require('../constants');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFound');
 const ConflictError = require('../errors/ConflictError');
@@ -9,7 +10,7 @@ const BadRequestError = require('../errors/BadRequesError');
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
-      throw new NotFoundError('ID не найден');
+      throw new NotFoundError(ERROR_MESSAGE_NOT_FOUND_ID);
     })
     .then((user) => res.send({
       _id: user._id,
@@ -35,7 +36,7 @@ module.exports.updateCurrentUser = (req, res, next) => {
     },
   )
     .orFail(() => {
-      throw new NotFoundError('ID не найден');
+      throw new NotFoundError(ERROR_MESSAGE_NOT_FOUND_ID);
     })
     .then((user) => res.send({
       _id: user._id,
@@ -58,7 +59,7 @@ module.exports.createUser = (req, res, next) => {
 
   User.findOne({ email }).then((user) => {
     if (user) {
-      throw new ConflictError('Пользователь с таким email уже зарегистрирован');
+      throw new ConflictError(ERROR_MESSAGE_CONFLICT);
     } else {
       return bcrypt.hash(password, 10);
     }
