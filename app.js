@@ -23,13 +23,7 @@ app.use(requestLogger);
 
 app.use(cors());
 
-app.use(require('./routes/signup'));
-
-app.use(require('./routes/signin'));
-
-app.use(require('./routes/users'));
-
-app.use(require('./routes/movies'));
+app.use(require('./routes'));
 
 app.use(auth, (req, res, next) => {
   next(new NotFoundError('Некорректный запрос'));
