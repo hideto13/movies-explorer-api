@@ -11,6 +11,9 @@ const {
   MONGO_DATA_BASE,
   PORT,
 } = require('./config');
+const {
+  ERROR_MESSAGE_NOT_FOUND,
+} = require('./constants');
 const NotFoundError = require('./errors/NotFound');
 
 const app = express();
@@ -27,7 +30,7 @@ app.use(cors());
 app.use(require('./routes'));
 
 app.use(auth, (req, res, next) => {
-  next(new NotFoundError('Некорректный запрос'));
+  next(new NotFoundError(ERROR_MESSAGE_NOT_FOUND));
 });
 
 app.use(errorLogger);
