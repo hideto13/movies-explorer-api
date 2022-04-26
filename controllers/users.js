@@ -46,28 +46,25 @@ module.exports.updateCurrentUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-      } else {
-        next(err);
       }
+      if (err.code === 11000) {
+        next(new ConflictError(ERROR_MESSAGE_CONFLICT));
+      }
+      next(err);
     });
 };
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    name, email, password,
-  } = req.body;
+  const { name, email, password } = req.body;
 
-  User.findOne({ email }).then((user) => {
-    if (user) {
-      throw new ConflictError(ERROR_MESSAGE_CONFLICT);
-    } else {
-      return bcrypt.hash(password, 10);
-    }
-  })
+  bcrypt
+    .hash(password, 10)
     .then((hash) => User.create({
-      name, email, password: hash,
+      name,
+      email,
+      password: hash,
     }))
-    .then((user) => res.status(201).send({
+    .then((user) => res.send({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -75,9 +72,15 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-      } else {
-        next(err);
       }
+      if (err.code === 11000) {
+        next(
+          new ConflictError(
+            ERROR_MESSAGE_CONFLICT,
+          ),
+        );
+      }
+      next(err);
     });
 };
 
