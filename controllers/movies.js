@@ -18,6 +18,7 @@ const getMovieObj = (movie) => {
     nameRU: movie.nameRU,
     nameEN: movie.nameEN,
     thumbnail: movie.thumbnail,
+    owner: movie.owner,
   };
   return obj;
 };
